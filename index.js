@@ -41,11 +41,6 @@ app.post('/', async (req, res) => {
     }
 })
 
-function getISTSDateTimeString(date) {
-    const offset = 5.5 * 60 * 60 * 1000; // IST is 5.5 hours ahead of UTC
-    const istDate = new Date(date.getTime() + offset);
-    return istDate.toLocaleString("en-IN", { timeZone: "Asia/Kolkata" });
-}
 
 
 app.put('/:uuid4/:action', async (req, res) => {
@@ -55,8 +50,8 @@ app.put('/:uuid4/:action', async (req, res) => {
         if (!valid_actions.includes(action)) throw Error(`action is not valid`)
         const date = new Date()
         const { ssn, name, address, email, phone_number, class_fee, attendence, earlyleave } = await studentModel.findOne({ uuid4 })
-        if (action === 'enter') attendence.push(getISTSDateTimeString(date))
-        else if (action === 'leave') earlyleave.push(getISTSDateTimeString(date))
+        if (action === 'enter') attendence.push(new Date().toLocaleString("en-US", {timeZone: "Asia/Colombo"}))
+        else if (action === 'leave') earlyleave.push(new Date().toLocaleString("en-US", {timeZone: "Asia/Colombo"}))
         const student = await studentModel.updateOne({ uuid4 }, { uuid4, ssn, name, address, email, phone_number, class_fee, attendence, earlyleave })
         res.status(200).json(student)
     } catch (error) {
